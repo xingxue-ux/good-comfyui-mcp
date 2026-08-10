@@ -1,5 +1,5 @@
 [project]
-name = "comfyui-lite-mcp"
+name = "good-comfyui-mcp"
 version = "0.1.0"
 description = "MCP server driving local ComfyUI image generation with a reference-image-to-reproduction toolchain (Danbooru tags, vision LLM, de-confusion, Civitai LoRA search)."
 readme = "README.md"
@@ -11,7 +11,7 @@ dependencies = [
 ]
 
 [project.scripts]
-comfyui-lite-mcp = "comfyui_lite_mcp:main"
+good-comfyui-mcp = "good_comfyui_mcp:main"
 
 [build-system]
 requires = ["setuptools>=68"]

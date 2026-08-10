@@ -6,7 +6,7 @@ Drives a local ComfyUI through a fixed pipeline workflow:
                                 (via the camofox-browser HTTP API, cached locally)
   2. generate()               - run the default pipeline with a user-approved prompt
 
-Usage:  python comfyui_lite_mcp.py   (stdio MCP server)
+Usage:  python good_comfyui_mcp.py   (stdio MCP server)
 
 Env overrides:
   PIPELINE      path to the workflow JSON (default ./pipeline.json)
@@ -42,10 +42,10 @@ CAMOFOX_URL = os.environ.get("CAMOFOX_URL", "http://127.0.0.1:9377").rstrip("/")
 CACHE_DIR = Path(__file__).parent / "cache"
 CACHE_TTL_DAYS = 30
 
-CAMOFOX_USER = "comfyui-lite-mcp"
+CAMOFOX_USER = "good_comfyui_mcp"
 CAMOFOX_SESSION = "main"
 
-mcp = FastMCP("comfyui-lite")
+mcp = FastMCP("good-comfyui-mcp")
 _http = httpx.Client(timeout=30, trust_env=False)
 
 
@@ -250,7 +250,7 @@ def lookup_character(character: str, force_refresh: bool = False) -> dict:
 MODELS_DIR = Path(os.environ.get("MODELS_ROOT", str(PIPELINE.parent / "models")))
 # ComfyUI 输出目录：默认 MODELS_ROOT 上级的 output/（即 ComfyUI 根/output）
 OUTPUT_DIR = Path(os.environ.get("COMFYUI_OUTPUT", str(MODELS_DIR.parent / "output")))
-MCP_MARK = "comfyui_lite_mcp"
+MCP_MARK = "good_comfyui_mcp"
 
 
 def _load_pipeline() -> dict:
@@ -386,7 +386,7 @@ def run_pipeline(prompt: str, negative_prompt: str, seed: int | None = None,
 
     _stamp_mcp_source(wf)
     r = _http.post(f"{COMFYUI_URL}/prompt",
-                   json={"prompt": wf, "client_id": "comfyui-lite-mcp"})
+                   json={"prompt": wf, "client_id": "good_comfyui_mcp"})
     if r.status_code != 200:
         raise RuntimeError(f"ComfyUI submit failed ({r.status_code}): {r.text[:500]}")
     prompt_id = r.json()["prompt_id"]
@@ -479,7 +479,7 @@ def _build_krea2_workflow(prompt: str, negative_prompt: str, seed: int,
     return wf
 
 
-def _submit_and_wait(wf: dict, timeout: int, tag: str = "comfyui-lite-mcp") -> dict:
+def _submit_and_wait(wf: dict, timeout: int, tag: str = "good_comfyui_mcp") -> dict:
     """Submit a workflow to ComfyUI and poll history until done."""
     _stamp_mcp_source(wf)
     r = _http.post(f"{COMFYUI_URL}/prompt",
@@ -534,7 +534,7 @@ def run_krea2(prompt: str, negative_prompt: str = "", seed: int | None = None,
     wf = _build_krea2_workflow(prompt, negative_prompt,
                                seed if seed is not None else random.randrange(2**53),
                                width, height, unet_name, lora_list, upscale)
-    return _submit_and_wait(wf, timeout, "comfyui-lite-mcp-krea2")
+    return _submit_and_wait(wf, timeout, "good_comfyui_mcp-krea2")
 
 
 # ---------------------------------------------------------------- MCP tools

@@ -1,4 +1,4 @@
-# comfyui-lite MCP Server
+# good-comfyui-mcp MCP Server
 
 用本地 ComfyUI 生成 AI 图像的 MCP 服务器，附带"参考图 → 复刻"工具链：
 角色 tag 查询（Danbooru）、本地视觉识图（Ollama）、小番茄混淆解混淆、
@@ -118,7 +118,7 @@ cd 本包目录 && mkdir -p compare && python -m http.server 8899 -d compare
 ### 6. 自检
 
 ```bash
-python -c "import comfyui_lite_mcp; print('OK')"   # 模块加载
+python -c "import good_comfyui_mcp; print('OK')"   # 模块加载
 # 用 MCP 客户端调用 server_info：返回每项依赖状态 + missing[] 引导提示
 #（ComfyUI/模型/自定义节点/Ollama/camofox/Civitai 配置全查）
 ```
@@ -153,7 +153,7 @@ python -c "import comfyui_lite_mcp; print('OK')"   # 模块加载
 ## 启动
 
 ```bash
-python comfyui_lite_mcp.py
+python good_comfyui_mcp.py
 ```
 
 MCP stdio 服务器，客户端配置示例：
@@ -161,9 +161,9 @@ MCP stdio 服务器，客户端配置示例：
 ```json
 {
   "mcpServers": {
-    "comfyui-lite": {
+    "good-comfyui-mcp": {
       "command": "python",
-      "args": ["/path/to/comfyui_lite_mcp.py"],
+      "args": ["/path/to/good_comfyui_mcp.py"],
       "env": { "CIVITAI_TOKEN": "你的token" }
     }
   }
@@ -205,14 +205,14 @@ python xfq_tool.py 混淆图.png --mode dec --times 1
 
 ## 文件
 
-- `comfyui_lite_mcp.py` — MCP 服务器主程序
+- `good_comfyui_mcp.py` — MCP 服务器主程序
 - `pipeline.json` — Anima 管线示例 workflow（默认正负提示词为通用占位）
 - `lora_search.py` — Civitai LoRA 精确版搜索工具
 - `xfq_tool.py` — 小番茄混淆/解混淆工具
 - `lora_annotate.py` — LoRA 清单标注（扫描 + KNOWN 字典人工维护）
 - `KREA2_TUNING.md` — Krea2 引擎调参笔记（量化选型/采样参数/风格 LoRA 实测）
 - `LICENSE` — MIT
-- `pyproject.toml` — 包元数据（`pip install .` 可安装，命令 `comfyui-lite-mcp`）
+- `pyproject.toml` — 包元数据（`pip install .` 可安装，命令 `good-comfyui-mcp`）
 
 ## 已知限制
 
