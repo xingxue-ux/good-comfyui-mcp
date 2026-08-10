@@ -21,7 +21,7 @@ Civitai LoRA 精确检索/下载/验证。
 
 ## 快速开始（给 Agent 的提示词）
 
-在你的 Agent（Claude / Cursor / pi 等）的**系统提示词或会话首条消息**里粘贴：
+在你的 Agent（Claude / Cursor / pi 等）的会话首条消息里粘贴：
 
 ```text
 请先阅读项目 README：https://github.com/xingxue-ux/good-comfyui-mcp
