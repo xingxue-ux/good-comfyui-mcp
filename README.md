@@ -21,12 +21,14 @@ Civitai LoRA 精确检索/下载/验证。
 
 ## 更新
 
-按安装方式选择：
-
 - **git clone 安装**：进入包目录执行 `git pull`（升级后重启 MCP 客户端生效）
 - **ZIP 安装**：GitHub 页面 Code → Download ZIP，解压覆盖原目录
   （覆盖前备份你自己改过的 `pipeline.json` 和 `compare/` 目录）
-- **pip 安装**：包目录内执行 `pip install -U .`
+
+本包**未发布到 PyPI**，不支持 `pip install good-comfyui-mcp`；
+安装方式只有 git clone 或 ZIP 下载，然后在 MCP 客户端里注册
+`python <包目录>/good_comfyui_mcp.py` 即可（pyproject.toml 仅供本地
+`pip install .` 元数据使用，无需执行）。
 
 注意事项：
 - 升级的是**代码**，模型文件（anima-base-v1.0 等）无需重下；仅当更新说明提到
