@@ -674,6 +674,42 @@ def describe_image(image_path: str, question: str = "", detail: bool = False,
 
 
 @mcp.tool()
+def setup_guide() -> list[dict]:
+    """初始化引导清单：安装本 MCP 后需要完成的步骤（每步含操作/验证/是否必需）。
+    配合 server_info 使用：先调 server_info 拿 missing 列表，再按本清单逐项
+    引导用户完成初始化（缺哪步做哪步，做完重新调 server_info 验证）。"""
+    return [
+        {"step": 1, "title": "安装 Python 依赖",
+         "action": "pip install -r requirements.txt（mcp/httpx/numpy/pillow）",
+         "required": True, "verify": "python -c \"import mcp, httpx, numpy, PIL\""},
+        {"step": 2, "title": "启动 ComfyUI",
+         "action": "启动本地 ComfyUI（默认 http://127.0.0.1:8188）",
+         "required": True, "verify": "server_info 返回 comfyui=online"},
+        {"step": 3, "title": "放置管线模型",
+         "action": "按 pipeline.json 引用放置：anima-base-v1.0（diffusion_models）、qwen_3_06b_base（text_encoders）、qwen_image_vae（vae）、RealESRGAN_x2plus（upscale_models）",
+         "required": True, "verify": "server_info 返回 models_ok=true"},
+        {"step": 4, "title": "安装 ComfyUI 自定义节点",
+         "action": "rgthree-comfy（LoraManager/Image Comparer）+ ComfyUI-Impact-Pack（FaceDetailer/SAM）",
+         "required": True, "verify": "generate 能提交成功"},
+        {"step": 5, "title": "拉取 Ollama 识图模型",
+         "action": "ollama pull qwen3-vl:8b && ollama pull llava:7b",
+         "required": True, "verify": "server_info 返回 ollama 两项 true"},
+        {"step": 6, "title": "启动 camofox-browser（可选）",
+         "action": "npm install -g camofox-browser && camofox-browser（默认 127.0.0.1:9377）",
+         "required": False, "verify": "server_info 返回 camofox=online；不装只影响角色 tag 查询"},
+        {"step": 7, "title": "配置 Civitai（可选）",
+         "action": "设置 CIVITAI_TOKEN（下载）和 CIVITAI_SEARCH_KEY（搜索），获取方法见 README 5b",
+         "required": False, "verify": "search_lora / download_lora 可用；不配不影响生成/识图"},
+        {"step": 8, "title": "启动对比页服务器（可选）",
+         "action": "cd 包目录 && python -m http.server 8899 -d compare",
+         "required": False, "verify": "generate 返回的 view_url 可访问"},
+        {"step": 9, "title": "跑一张测试图",
+         "action": "generate(prompt='masterpiece, best quality, 1girl, smile') 确认出图",
+         "required": True, "verify": "返回 completed 且输出文件存在"},
+    ]
+
+
+@mcp.tool()
 def server_info() -> dict:
     """依赖自检：ComfyUI、pipeline 引用的模型、自定义节点、Ollama 识图模型、
     camofox、Civitai 配置是否就绪。返回每项状态 + 缺失项的安装引导提示。
