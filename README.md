@@ -24,10 +24,10 @@ Civitai LoRA 精确检索/下载/验证。
 在你的 Agent（Claude / Cursor / pi 等）的**系统提示词或会话首条消息**里粘贴：
 
 ```text
-你已接入 MCP 服务器 good-comfyui-mcp（本地 ComfyUI 图像生成）。
+你将使用 MCP 服务器 good-comfyui-mcp（本地 ComfyUI 图像生成工具）。
 请先阅读项目 README：https://github.com/xingxue-ux/good-comfyui-mcp
 按其「安装（初始化引导）」章节主动协助我完成安装与初始化，
-然后跑一张测试图确认可用。
+安装完成后跑一张测试图确认可用。
 ```
 
 ## 安装（初始化引导）
