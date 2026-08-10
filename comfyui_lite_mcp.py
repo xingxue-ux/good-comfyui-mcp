@@ -675,19 +675,84 @@ def describe_image(image_path: str, question: str = "", detail: bool = False,
 
 @mcp.tool()
 def server_info() -> dict:
-    """Check whether ComfyUI, camofox-browser and the default pipeline are ready,
-    and report where recent images came from (this MCP vs manual runs).
-    Call this first."""
-    info = {"pipeline": str(PIPELINE), "pipeline_exists": PIPELINE.exists()}
+    """依赖自检：ComfyUI、pipeline 引用的模型、自定义节点、Ollama 识图模型、
+    camofox、Civitai 配置是否就绪。返回每项状态 + 缺失项的安装引导提示。
+    建议每次会话开始时调用一次，按 missing[] 提示用户补齐依赖。"""
+    import socket
+    info = {"pipeline": str(PIPELINE), "pipeline_exists": PIPELINE.exists(),
+            "missing": [], "ready": False}
+    # ComfyUI
     try:
         r = _http.get(f"{COMFYUI_URL}/system_stats", timeout=5)
         info["comfyui"] = "online" if r.status_code == 200 else f"http {r.status_code}"
     except Exception as e:
         info["comfyui"] = f"offline ({e.__class__.__name__})"
+    if info["comfyui"] != "online":
+        info["missing"].append("ComfyUI 未运行（启动 ComfyUI，默认 127.0.0.1:8188）")
+    # pipeline 引用的模型
+    models_ok = True
+    if PIPELINE.exists():
+        try:
+            wf = json.loads(PIPELINE.read_text(encoding="utf-8"))
+            for nid, n in wf.items():
+                ins = n.get("inputs", {})
+                ct = n.get("class_type", "")
+                if ct == "UNETLoader":
+                    name = ins.get("unet_name", "")
+                    p = MODELS_DIR / "diffusion_models" / name
+                    if not p.exists():
+                        models_ok = False
+                        info["missing"].append(f"模型缺失: {p.name}（放 models/diffusion_models/）")
+                elif ct == "CLIPLoader":
+                    name = ins.get("clip_name", "")
+                    p = MODELS_DIR / "text_encoders" / name
+                    if not p.exists():
+                        models_ok = False
+                        info["missing"].append(f"CLIP 缺失: {p.name}（放 models/text_encoders/）")
+                elif ct == "VAELoader":
+                    name = ins.get("vae_name", "")
+                    p = MODELS_DIR / "vae" / name
+                    if not p.exists():
+                        models_ok = False
+                        info["missing"].append(f"VAE 缺失: {p.name}（放 models/vae/）")
+                elif ct == "UpscaleModelLoader":
+                    name = ins.get("model_name", "")
+                    p = MODELS_DIR / "upscale_models" / name
+                    if not p.exists():
+                        models_ok = False
+                        info["missing"].append(f"放大模型缺失: {p.name}（放 models/upscale_models/）")
+        except Exception:
+            models_ok = False
+            info["missing"].append("pipeline.json 解析失败")
+    info["models_ok"] = models_ok
+    # Ollama 识图模型
+    ollama = {}
+    try:
+        d = _http.get("http://127.0.0.1:11434/api/tags", timeout=5).json()
+        have = {m["name"] for m in d.get("models", [])}
+        for need in ("qwen3-vl:8b", "llava:7b"):
+            ollama[need] = need in have
+            if need not in have:
+                info["missing"].append(f"Ollama 模型缺失: ollama pull {need}")
+    except Exception as e:
+        ollama = f"offline ({e.__class__.__name__})"
+        info["missing"].append("Ollama 未运行（识图不可用；安装 Ollama 后 ollama pull qwen3-vl:8b llava:7b）")
+    info["ollama"] = ollama
+    # camofox
     try:
         info["camofox"] = ensure_camofox()
     except Exception as e:
         info["camofox"] = f"offline ({e})"
+        info["missing"].append("camofox-browser 未运行（角色 tag 查询不可用；npm install -g camofox-browser 后启动）")
+    # Civitai 配置
+    tok = os.environ.get("CIVITAI_TOKEN", "")
+    key = os.environ.get("CIVITAI_SEARCH_KEY", "")
+    info["civitai"] = {"token": bool(tok), "search_key": bool(key)}
+    if not tok:
+        info["missing"].append("CIVITAI_TOKEN 未配置（download_lora 不可用；README 5b 可选）")
+    if not key:
+        info["missing"].append("CIVITAI_SEARCH_KEY 未配置（search_lora 不可用；README 5b 可选）")
+    info["ready"] = info["comfyui"] == "online" and models_ok
     info["recent_runs"] = _recent_run_sources()
     return info
 

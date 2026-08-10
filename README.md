@@ -120,8 +120,25 @@ cd 本包目录 && mkdir -p compare && python -m http.server 8899 -d compare
 
 ```bash
 python -c "import comfyui_lite_mcp; print('OK')"   # 模块加载
-# 用 MCP 客户端调用 describe_image 测试识图（不依赖 C 站配置）
+# 用 MCP 客户端调用 server_info：返回每项依赖状态 + missing[] 引导提示
+#（ComfyUI/模型/自定义节点/Ollama/camofox/Civitai 配置全查）
 ```
+
+会话开始建议先调一次 `server_info`——它会返回 `missing` 列表，按提示逐项补齐即可。
+
+## 依赖清单
+
+| 类型 | 依赖 | 用途 | 必需? |
+|---|---|---|---|
+| Python | mcp, httpx, numpy, pillow（requirements.txt） | MCP 框架/网络/图像处理 | ✅ |
+| 服务 | ComfyUI（127.0.0.1:8188） | 生成引擎 | ✅ |
+| 模型 | anima-base-v1.0 + qwen_3_06b_base + qwen_image_vae（pipeline.json 引用） | Anima 管线 | ✅ |
+| 节点 | rgthree-comfy、ComfyUI-Impact-Pack | pipeline 自定义节点 | ✅ |
+| 服务 | Ollama + qwen3-vl:8b + llava:7b | 识图 | ✅（识图功能） |
+| 服务 | camofox-browser（127.0.0.1:9377） | Danbooru 角色查询 | 可选 |
+| 配置 | CIVITAI_TOKEN / CIVITAI_SEARCH_KEY | LoRA 下载/搜索 | 可选 |
+| 服务 | python -m http.server 8899 -d compare | 对比页展示 | 可选 |
+
 
 ## 启动
 
