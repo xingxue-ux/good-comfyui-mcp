@@ -694,9 +694,9 @@ def setup_guide() -> list[dict]:
         {"step": 5, "title": "拉取 Ollama 识图模型",
          "action": "ollama pull qwen3-vl:8b && ollama pull llava:7b",
          "required": True, "verify": "server_info 返回 ollama 两项 true"},
-        {"step": 6, "title": "启动 camofox-browser（可选）",
+        {"step": 6, "title": "启动 camofox-browser",
          "action": "npm install -g camofox-browser && camofox-browser（默认 127.0.0.1:9377）",
-         "required": False, "verify": "server_info 返回 camofox=online；不装只影响角色 tag 查询"},
+         "required": True, "verify": "server_info 返回 camofox=online；缺了角色 tag/外貌查询不可用"},
         {"step": 7, "title": "配置 Civitai（可选）",
          "action": "设置 CIVITAI_TOKEN（下载）和 CIVITAI_SEARCH_KEY（搜索），获取方法见 README 5b",
          "required": False, "verify": "search_lora / download_lora 可用；不配不影响生成/识图"},
@@ -779,7 +779,7 @@ def server_info() -> dict:
         info["camofox"] = ensure_camofox()
     except Exception as e:
         info["camofox"] = f"offline ({e})"
-        info["missing"].append("camofox-browser 未运行（角色 tag 查询不可用；npm install -g camofox-browser 后启动）")
+        info["missing"].append("camofox-browser 未运行（必需：角色 tag 查询不可用；npm install -g camofox-browser 后启动，README 第 4 步）")
     # Civitai 配置
     tok = os.environ.get("CIVITAI_TOKEN", "")
     key = os.environ.get("CIVITAI_SEARCH_KEY", "")

@@ -51,16 +51,15 @@ ollama pull qwen3-vl:8b    # 主识图模型（准确，NSFW 会拒答）
 ollama pull llava:7b       # 无审查 fallback（NSFW 图识图）
 ```
 
-### 4. camofox-browser（Danbooru 角色查询用）
+### 4. camofox-browser（Danbooru 角色查询，必需）
 
-`lookup_character_tags` 通过 camofox-browser 的反检测浏览器访问 Danbooru：
+`lookup_character_tags` / `lookup_character_appearance` 通过 camofox-browser 的
+反检测浏览器访问 Danbooru（复刻前确认角色 tag 是标准流程）：
 
 ```bash
 npm install -g camofox-browser   # 或按项目 README 安装
 camofox-browser                   # 启动服务（默认 127.0.0.1:9377）
 ```
-
-不装也能用，但角色 tag 查询会失败（其他工具不受影响）。
 
 ### 5. 环境变量
 
@@ -132,8 +131,8 @@ python -c "import comfyui_lite_mcp; print('OK')"   # 模块加载
 
 1. 第一轮先调用 **`setup_guide`**（拿到 9 步初始化清单）和 **`server_info`**（拿到缺失项）
 2. 按清单逐项引导：
-   - 必需项（1-5、9）：缺失时提示用户执行对应命令，完成后重新调 `server_info` 验证
-   - 可选项（6-8）：询问用户是否需要，不需要就跳过并说明影响
+   - 必需项（1-6、9）：缺失时提示用户执行对应命令，完成后重新调 `server_info` 验证
+   - 可选项（7-8）：询问用户是否需要，不需要就跳过并说明影响
 3. 直到 `server_info` 的 `missing` 只剩可选项（或用户明确不需要）→ 初始化完成，进入正常使用
 4. 之后每次会话可先快速调 `server_info` 确认环境没变（如 ComfyUI/Ollama 重启后）
 
@@ -146,7 +145,7 @@ python -c "import comfyui_lite_mcp; print('OK')"   # 模块加载
 | 模型 | anima-base-v1.0 + qwen_3_06b_base + qwen_image_vae（pipeline.json 引用） | Anima 管线 | ✅ |
 | 节点 | rgthree-comfy、ComfyUI-Impact-Pack | pipeline 自定义节点 | ✅ |
 | 服务 | Ollama + qwen3-vl:8b + llava:7b | 识图 | ✅（识图功能） |
-| 服务 | camofox-browser（127.0.0.1:9377） | Danbooru 角色查询 | 可选 |
+| 服务 | camofox-browser（127.0.0.1:9377） | Danbooru 角色查询 | ✅ |
 | 配置 | CIVITAI_TOKEN / CIVITAI_SEARCH_KEY | LoRA 下载/搜索 | 可选 |
 | 服务 | python -m http.server 8899 -d compare | 对比页展示 | 可选 |
 
