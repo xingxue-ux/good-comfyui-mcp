@@ -886,6 +886,13 @@ def generate(prompt: str, negative_prompt: str = "", seed: int | None = None,
     un-confused reference). When given, the result includes a side-by-side
     comparison page URL (view_url) instead of a plain image URL.
 
+    PRESENTATION (重要): the result always includes `view_url` (points to the
+    local 8899 static server serving the compare/ dir). When you have a
+    browser tool (browser_open / screenshot), ALWAYS open view_url in the
+    browser to SHOW the user the generated image (and comparison page when a
+    reference was given). If the 8899 server is down (view_url unreachable),
+    fall back to giving the user the output file path.
+
     engine="anima" (default): the 生成与高修api.json pipeline, Anima tag model.
       Optional override: steps/cfg/sampler_name (verified good combo: steps=30,
       cfg=4.0, sampler_name=euler_ancestral, scheduler=simple, no hires fix).
