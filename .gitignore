@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# 运行时产物
+cache/
+compare/
+models/
+output/
+*.log
+
+# 环境
+.env
+.env.*
