@@ -19,6 +19,24 @@ Civitai LoRA 精确检索/下载/验证。
 | `deconfuse_image` | 小番茄混淆（Gilbert 曲线）解混淆 |
 | `list_cached_characters` | 已缓存角色列表 |
 
+## 快速开始（给 Agent 的提示词）
+
+在你的 Agent（Claude / Cursor / pi 等）的**系统提示词或会话首条消息**里粘贴：
+
+```text
+你已接入 MCP 服务器 good-comfyui-mcp（本地 ComfyUI 图像生成 + 参考图复刻工具链）。
+请主动辅助我完成初始化：
+1. 调用 setup_guide 获取初始化步骤清单，调用 server_info 检查环境状态；
+2. 按清单逐项引导我补齐缺失依赖（必需项：Python 依赖、ComfyUI、管线模型、
+   自定义节点 rgthree + Impact-Pack、Ollama 识图模型 qwen3-vl:8b + llava:7b、
+   camofox-browser；可选项：Civitai token/key、8899 对比页服务器）；
+3. 每完成一项重新调用 server_info 验证，直到 missing 只剩可选项；
+4. 初始化完成后生成一张测试图（generate）确认整条链路可用，
+   并把生成结果和对比页（view_url）展示给我。
+```
+
+Agent 会据此自动完成依赖检查 → 安装引导 → 验证 → 测试出图的完整流程。
+
 ## 安装（初始化引导）
 
 ### 1. 依赖
