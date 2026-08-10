@@ -19,6 +19,21 @@ Civitai LoRA 精确检索/下载/验证。
 | `deconfuse_image` | 小番茄混淆（Gilbert 曲线）解混淆 |
 | `list_cached_characters` | 已缓存角色列表 |
 
+## 更新
+
+按安装方式选择：
+
+- **git clone 安装**：进入包目录执行 `git pull`（升级后重启 MCP 客户端生效）
+- **ZIP 安装**：GitHub 页面 Code → Download ZIP，解压覆盖原目录
+  （覆盖前备份你自己改过的 `pipeline.json` 和 `compare/` 目录）
+- **pip 安装**：包目录内执行 `pip install -U .`
+
+注意事项：
+- 升级的是**代码**，模型文件（anima-base-v1.0 等）无需重下；仅当更新说明提到
+  模型/自定义节点变更时才需要补装
+- 若你改过 `pipeline.json`，git pull 可能冲突——先备份再更新
+- 升级后重启 MCP 客户端使新代码生效，然后调 `server_info` 确认环境正常
+
 ## 快速开始（给 Agent 的提示词）
 
 在你的 Agent（Claude / Cursor / pi 等）的会话首条消息里粘贴：
