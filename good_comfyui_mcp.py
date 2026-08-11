@@ -720,9 +720,9 @@ def setup_guide() -> list[dict]:
         {"step": 4, "title": "确认管线模型就绪（无自定义节点依赖）",
          "action": "pipeline.json 只用 ComfyUI 内置节点（UNETLoader/CLIPLoader/VAELoader/LoraLoader/KSampler/RealESRGAN）",
          "required": True, "verify": "generate 能提交成功"},
-        {"step": 5, "title": "拉取 Ollama 识图模型",
-         "action": "ollama pull qwen3-vl:8b && ollama pull llava:7b",
-         "required": True, "verify": "server_info 返回 ollama 两项 true"},
+        {"step": 5, "title": "Ollama 识图模型（按需，可后装）",
+         "action": "首次需要识图（describe_image）时再装：ollama pull qwen3-vl:8b && ollama pull llava:7b",
+         "required": False, "verify": "describe_image 能返回描述；未装时该工具会提示安装"},
         {"step": 6, "title": "启动 camofox-browser",
          "action": "npm install -g camofox-browser && camofox-browser（默认 127.0.0.1:9377）",
          "required": True, "verify": "server_info 返回 camofox=online；缺了角色 tag/外貌查询不可用"},
@@ -798,10 +798,12 @@ def server_info() -> dict:
         for need in ("qwen3-vl:8b", "llava:7b"):
             ollama[need] = need in have
             if need not in have:
-                info["missing"].append(f"Ollama 模型缺失: ollama pull {need}")
+                info.setdefault("on_demand", []).append(
+                    f"Ollama 模型 {need} 未装（首次识图时提醒用户安装：ollama pull {need}）")
     except Exception as e:
         ollama = f"offline ({e.__class__.__name__})"
-        info["missing"].append("Ollama 未运行（识图不可用；安装 Ollama 后 ollama pull qwen3-vl:8b llava:7b）")
+        info.setdefault("on_demand", []).append(
+            "Ollama 未运行（识图按需：首次 describe_image 时再安装/启动 Ollama）")
     info["ollama"] = ollama
     # camofox
     try:

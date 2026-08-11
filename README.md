@@ -138,13 +138,15 @@ python main.py --enable-manager                      # 启用（界面右侧 Man
 - **Krea2 管线**（可选）：Dasiwa 等 Krea2 checkpoint + `qwen3vl_4b_*` CLIP，
   详见 `KREA2_TUNING.md`
 
-### 3. Ollama 识图模型
+### 3. Ollama 识图模型（按需，可后装）
 
 官方安装：https://ollama.com/download（Windows 安装器；Linux `curl -fsSL https://ollama.com/install.sh | sh`）
+**不需要初始化时装**——首次调用 `describe_image` 识图时再装即可：
 ```bash
 ollama pull qwen3-vl:8b    # 主识图模型（准确，NSFW 会拒答）
 ollama pull llava:7b       # 无审查 fallback（NSFW 图识图）
 ```
+`server_info` 会以 `on_demand` 提示未装项；未装时 `describe_image` 会提醒安装。
 
 ### 4. camofox-browser（Danbooru 角色查询，必需）
 
@@ -246,7 +248,7 @@ python -c "import good_comfyui_mcp; print('OK')"   # 模块加载
 | 模型 | anima-base-v1.0 / qwen_3_06b_base / qwen_image_vae / RealESRGAN_x2plus | civitai.red 下载放对应 models 子目录 | ✅ |
 | LoRA | 默认 5 件套（ushikani/darklight/photo-bg/RealSkin/surtr945） | civitai.red 下载放 models/loras/（可用本 MCP search_lora） | ✅（默认挂载） |
 | 节点 | 无（pipeline 只用 ComfyUI 内置节点） | — | ✅ |
-| 服务 | Ollama + qwen3-vl:8b + llava:7b | ollama.com/download + `ollama pull` | ✅（识图） |
+| 服务 | Ollama + qwen3-vl:8b + llava:7b | ollama.com/download + `ollama pull`（按需，首次识图时装） | 可选 |
 | 服务 | camofox-browser（127.0.0.1:9377） | `npm install -g @askjo/camofox-browser`（Node>=20，另有 redf0x1 同名实现） | ✅ |
 | 配置 | CIVITAI_TOKEN / CIVITAI_SEARCH_KEY | civitai.red API Keys / F12 抓 multi-search Bearer | 可选 |
 | 服务 | python -m http.server 8899 -d compare | Python 自带 | 可选 |
