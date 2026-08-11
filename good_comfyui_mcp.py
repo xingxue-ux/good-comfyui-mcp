@@ -284,21 +284,8 @@ def _validate_submission(wf: dict, unet_name: str, lora_text: str,
                          width: int | None, height: int | None) -> None:
     """Validate resources and parameters before submitting to ComfyUI."""
     _check_resource(unet_name, "diffusion_models")
-    # LoRAs referenced in text and/or in the structured loras input
+    # LoRAs referenced in text (injected as a dynamic LoraLoader chain)
     lora_names = set(re.findall(r"<lora:([^:>]+)", lora_text))
-    try:
-        _, lora_node = _find_node(wf, "Lora Loader (LoraManager)")
-    except RuntimeError:
-        if lora_names:
-            raise RuntimeError(
-                f"pipeline has no Lora Loader node but lora_text was given: {lora_text}")
-    else:
-        loras_input = lora_node["inputs"].get("loras", [])
-        if isinstance(loras_input, dict):
-            loras_input = loras_input.get("__value__", [])
-        for item in loras_input if isinstance(loras_input, list) else []:
-            if isinstance(item, dict) and item.get("active", True):
-                lora_names.add(item.get("name", ""))
     for name in lora_names:
         _check_resource(name, "loras")
     if width is not None and not (0 < width <= 4096):
@@ -339,6 +326,45 @@ def _stamp_mcp_source(wf: dict) -> None:
         node.setdefault("_meta", {})[MCP_MARK] = True
 
 
+def _inject_lora_chain(wf: dict, lora_text: str) -> None:
+    """动态注入 LoraLoader 链（标准内置节点，无 rgthree 依赖）。
+    解析 <lora:name:strength>，在 UNETLoader 后插入串联节点，
+    KSampler.model 与 CLIPTextEncode.clip 指向链尾；空 lora_text 时保持直连。"""
+    parsed = [(mt.group(1), float(mt.group(2)))
+              for mt in re.finditer(r"<lora:([^:>]+):([\d.]+)>", lora_text)]
+    if not parsed:
+        return
+    _, unet = _find_node(wf, "UNETLoader")
+    _, clip = _find_node(wf, "CLIPLoader")
+    samplers = [n for n in wf.values() if n["class_type"] == "KSampler"]
+    if not samplers:
+        raise RuntimeError("pipeline has no KSampler node")
+    used = {int(nid) for nid in wf if str(nid).isdigit()}
+    nid = max(used) + 1
+    prev_model, prev_clip, clip_id = "1", "6", "6"
+    # 找到实际 loader 节点 id（避免硬编码 1/6）
+    for k, v in wf.items():
+        if v["class_type"] == "UNETLoader":
+            prev_model = k
+        elif v["class_type"] == "CLIPLoader":
+            prev_clip = clip_id = k
+    for name, strength in parsed:
+        cur = str(nid); nid += 1
+        # 首个 LoRA 的 clip 来自 CLIPLoader（单输出，索引 0）；后续来自上一个 LoraLoader 的 CLIP 输出（索引 1）
+        clip_idx = 0 if prev_clip == clip_id else 1
+        wf[cur] = {"class_type": "LoraLoader", "inputs": {
+            "model": [prev_model, 0], "clip": [prev_clip, clip_idx],
+            "lora_name": name, "strength_model": strength,
+            "strength_clip": strength}}
+        prev_model = prev_clip = cur
+    # 重接采样与文本编码
+    for s in samplers:
+        s["inputs"]["model"] = [prev_model, 0]
+    for _, n in wf.items():
+        if n["class_type"] == "CLIPTextEncode":
+            n["inputs"]["clip"] = [prev_clip, 1]
+
+
 def run_pipeline(prompt: str, negative_prompt: str, seed: int | None = None,
                  width: int | None = None, height: int | None = None,
                  unet_name: str = "anima-base-v1.0.safetensors",
@@ -376,13 +402,7 @@ def run_pipeline(prompt: str, negative_prompt: str, seed: int | None = None,
         pass  # pipeline may define its own resolution
 
     # strip stale character LoRA so a new character doesn't inherit the old one
-    try:
-        _, lora_node = _find_node(wf, "Lora Loader (LoraManager)")
-        lora_node["inputs"]["text"] = lora_text
-    except RuntimeError:
-        if lora_text:
-            raise RuntimeError(
-                f"pipeline has no Lora Loader (LoraManager) node but lora_text was given: {lora_text}")
+    _inject_lora_chain(wf, lora_text)
 
     _stamp_mcp_source(wf)
     r = _http.post(f"{COMFYUI_URL}/prompt",
@@ -688,8 +708,8 @@ def setup_guide() -> list[dict]:
         {"step": 3, "title": "放置管线模型",
          "action": "按 pipeline.json 引用放置：anima-base-v1.0（diffusion_models）、qwen_3_06b_base（text_encoders）、qwen_image_vae（vae）、RealESRGAN_x2plus（upscale_models）",
          "required": True, "verify": "server_info 返回 models_ok=true"},
-        {"step": 4, "title": "安装 ComfyUI 自定义节点",
-         "action": "rgthree-comfy（LoraManager/Image Comparer）+ ComfyUI-Impact-Pack（FaceDetailer/SAM）",
+        {"step": 4, "title": "确认管线模型就绪（无自定义节点依赖）",
+         "action": "pipeline.json 只用 ComfyUI 内置节点（UNETLoader/CLIPLoader/VAELoader/LoraLoader/KSampler/RealESRGAN）",
          "required": True, "verify": "generate 能提交成功"},
         {"step": 5, "title": "拉取 Ollama 识图模型",
          "action": "ollama pull qwen3-vl:8b && ollama pull llava:7b",
@@ -962,13 +982,7 @@ def generate(prompt: str, negative_prompt: str = "", seed: int | None = None,
                 latent["inputs"]["height"] = height
         except RuntimeError:
             pass
-        try:
-            _, lora_node = _find_node(wf, "Lora Loader (LoraManager)")
-            lora_node["inputs"]["text"] = lora_text
-        except RuntimeError:
-            if lora_text:
-                raise RuntimeError(
-                    f"pipeline has no Lora Loader (LoraManager) node but lora_text was given: {lora_text}")
+        _inject_lora_chain(wf, lora_text)
         result = _submit_and_wait(wf, timeout)
     if info:
         result["character_info"] = info

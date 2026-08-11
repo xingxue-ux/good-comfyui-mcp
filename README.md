@@ -63,12 +63,9 @@ pip install -r requirements.txt        # mcp + httpx
   - 放大：`RealESRGAN_x2plus.pth`（`models/upscale_models/`，可选）
 - **Krea2 管线**（可选）：Dasiwa 等 Krea2 checkpoint + `qwen3vl_4b_*` CLIP，
   详见 `KREA2_TUNING.md`
-- **ComfyUI 自定义节点**（`pipeline.json` 依赖，缺了 generate 会失败）：
-  - [rgthree-comfy](https://github.com/rgthree/rgthree-comfy)（Lora Loader (LoraManager)、Image Comparer）
-  - [ComfyUI-Impact-Pack](https://github.com/ltdrdata/ComfyUI-Impact-Pack)（FaceDetailer、SAMLoader、UltralyticsDetectorProvider，含对应 SAM 模型与 bbox/segm detector）
-
-  安装：ComfyUI 菜单 → Custom Nodes → Install via Git URL，或把仓库 clone 到
-  `ComfyUI/custom_nodes/` 后重启。
+- **ComfyUI 自定义节点**：`pipeline.json`（Anima 默认管线）只用内置节点
+  （UNETLoader/CLIPLoader/VAELoader/LoraLoader/KSampler/RealESRGAN），
+  **无需任何自定义节点**。LoRA 由 MCP 动态注入为标准 LoraLoader 链。
 
 ### 3. Ollama 识图模型
 
@@ -169,7 +166,7 @@ python -c "import good_comfyui_mcp; print('OK')"   # 模块加载
 | Python | mcp, httpx, numpy, pillow（requirements.txt） | MCP 框架/网络/图像处理 | ✅ |
 | 服务 | ComfyUI（127.0.0.1:8188） | 生成引擎 | ✅ |
 | 模型 | anima-base-v1.0 + qwen_3_06b_base + qwen_image_vae（pipeline.json 引用） | Anima 管线 | ✅ |
-| 节点 | rgthree-comfy、ComfyUI-Impact-Pack | pipeline 自定义节点 | ✅ |
+| 节点 | 无（pipeline 只用 ComfyUI 内置节点） | — | ✅ |
 | 服务 | Ollama + qwen3-vl:8b + llava:7b | 识图 | ✅（识图功能） |
 | 服务 | camofox-browser（127.0.0.1:9377） | Danbooru 角色查询 | ✅ |
 | 配置 | CIVITAI_TOKEN / CIVITAI_SEARCH_KEY | LoRA 下载/搜索 | 可选 |

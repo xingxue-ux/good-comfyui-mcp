@@ -1,346 +1,126 @@
 {
-  "8": {
-    "inputs": {
-      "samples": [
-        "19",
-        0
-      ],
-      "vae": [
-        "15",
-        0
-      ]
-    },
-    "class_type": "VAEDecode",
-    "_meta": {
-      "title": "VAE解码"
-    }
-  },
-  "11": {
-    "inputs": {
-      "text": "masterpiece, best quality, very aesthetic, 1girl, solo, standing, looking at viewer, anime style",
-      "clip": [
-        "85",
-        1
-      ]
-    },
-    "class_type": "CLIPTextEncode",
-    "_meta": {
-      "title": "CLIP Text Encode (Positive Prompt)"
-    }
-  },
-  "12": {
-    "inputs": {
-      "text": "(score_4, score_5, score_6:1.2), worst quality, low quality, normal quality, bad hands, bad feet, bad anatomy, bad proportions, cropped, missing fingers, jpeg artifacts, signature, watermark, username, artist name, extra digit, fewer digits, artistic error, ",
-      "clip": [
-        "85",
-        1
-      ]
-    },
-    "class_type": "CLIPTextEncode",
-    "_meta": {
-      "title": "CLIP Text Encode (Negative Prompt)"
-    }
-  },
-  "15": {
-    "inputs": {
-      "vae_name": "qwen_image_vae.safetensors"
-    },
-    "class_type": "VAELoader",
-    "_meta": {
-      "title": "加载VAE"
-    }
-  },
-  "19": {
-    "inputs": {
-      "seed": 792911948534057,
-      "steps": 24,
-      "cfg": 5,
-      "sampler_name": "euler_ancestral",
-      "scheduler": "normal",
-      "denoise": 1,
-      "model": [
-        "85",
-        0
-      ],
-      "positive": [
-        "11",
-        0
-      ],
-      "negative": [
-        "12",
-        0
-      ],
-      "latent_image": [
-        "28",
-        0
-      ]
-    },
-    "class_type": "KSampler",
-    "_meta": {
-      "title": "K采样器"
-    }
-  },
-  "28": {
-    "inputs": {
-      "width": 1024,
-      "height": 1536,
-      "batch_size": 1
-    },
-    "class_type": "EmptyLatentImage",
-    "_meta": {
-      "title": "空Latent图像"
-    }
-  },
-  "44": {
-    "inputs": {
-      "unet_name": "anima-base-v1.0.safetensors",
-      "weight_dtype": "default"
-    },
-    "class_type": "UNETLoader",
-    "_meta": {
-      "title": "UNet加载器"
-    }
-  },
-  "45": {
-    "inputs": {
-      "clip_name": "qwen_3_06b_base.safetensors",
-      "type": "qwen_image",
-      "device": "default"
-    },
-    "class_type": "CLIPLoader",
-    "_meta": {
-      "title": "加载CLIP"
-    }
-  },
-  "63": {
-    "inputs": {
-      "pixels": [
-        "73",
-        0
-      ],
-      "vae": [
-        "15",
-        0
-      ]
-    },
-    "class_type": "VAEEncode",
-    "_meta": {
-      "title": "VAE编码"
-    }
-  },
-  "64": {
-    "inputs": {
-      "samples": [
-        "76",
-        0
-      ],
-      "vae": [
-        "15",
-        0
-      ]
-    },
-    "class_type": "VAEDecode",
-    "_meta": {
-      "title": "VAE解码"
-    }
-  },
-  "65": {
-    "inputs": {
-      "filename_prefix": "ComfyUI",
-      "images": [
-        "75",
-        0
-      ]
-    },
-    "class_type": "SaveImage",
-    "_meta": {
-      "title": "保存图像"
-    }
-  },
-  "69": {
-    "inputs": {
-      "model_name": "bbox/face_yolov8m.pt"
-    },
-    "class_type": "UltralyticsDetectorProvider",
-    "_meta": {
-      "title": "UltralyticsDetectorProvider"
-    }
-  },
-  "73": {
-    "inputs": {
-      "upscale_model": "4x-AnimeSharp.pth",
-      "mode": "rescale",
-      "rescale_factor": 1.5,
-      "resize_width": 1024,
-      "resampling_method": "lanczos",
-      "supersample": "true",
-      "rounding_modulus": 8,
-      "image": [
-        "8",
-        0
-      ]
-    },
-    "class_type": "CR Upscale Image",
-    "_meta": {
-      "title": "🔍 CR Upscale Image"
-    }
-  },
-  "74": {
-    "inputs": {
-      "model_name": "sam_vit_b_01ec64.pth",
-      "device_mode": "AUTO"
-    },
-    "class_type": "SAMLoader",
-    "_meta": {
-      "title": "SAMLoader (Impact)"
-    }
-  },
-  "75": {
-    "inputs": {
-      "guide_size": 512,
-      "guide_size_for": true,
-      "max_size": 1024,
-      "seed": 394605684643883,
-      "steps": 28,
-      "cfg": 5,
-      "sampler_name": "euler_ancestral",
-      "scheduler": "normal",
-      "denoise": 0.2,
-      "feather": 5,
-      "noise_mask": true,
-      "force_inpaint": true,
-      "bbox_threshold": 0.6,
-      "bbox_dilation": 10,
-      "bbox_crop_factor": 1.3,
-      "sam_detection_hint": "center-1",
-      "sam_dilation": 0,
-      "sam_threshold": 0.93,
-      "sam_bbox_expansion": 0,
-      "sam_mask_hint_threshold": 0.7,
-      "sam_mask_hint_use_negative": "False",
-      "drop_size": 10,
-      "wildcard": "",
-      "cycle": 1,
-      "inpaint_model": false,
-      "noise_mask_feather": 20,
-      "tiled_encode": false,
-      "tiled_decode": false,
-      "image": [
-        "64",
-        0
-      ],
-      "model": [
-        "85",
-        0
-      ],
-      "clip": [
-        "85",
-        1
-      ],
-      "vae": [
-        "15",
-        0
-      ],
-      "positive": [
-        "11",
-        0
-      ],
-      "negative": [
-        "12",
-        0
-      ],
-      "bbox_detector": [
-        "69",
-        0
-      ],
-      "sam_model_opt": [
-        "74",
-        0
-      ]
-    },
-    "class_type": "FaceDetailer",
-    "_meta": {
-      "title": "FaceDetailer"
-    }
-  },
-  "76": {
-    "inputs": {
-      "seed": 479604180403113,
-      "steps": 14,
-      "cfg": 5,
-      "sampler_name": "euler_ancestral",
-      "scheduler": "normal",
-      "denoise": 0.2,
-      "model": [
-        "85",
-        0
-      ],
-      "positive": [
-        "11",
-        0
-      ],
-      "negative": [
-        "12",
-        0
-      ],
-      "latent_image": [
-        "63",
-        0
-      ]
-    },
-    "class_type": "KSampler",
-    "_meta": {
-      "title": "K采样器"
-    }
-  },
-  "80": {
-    "inputs": {
-      "rgthree_comparer": {
-        "images": [
-          {
-            "name": "A",
-            "selected": true,
-            "url": "/api/view?filename=rgthree.compare._temp_gxnpv_00005_.png&type=temp&subfolder=&rand=0.7821023353652037"
-          },
-          {
-            "name": "B",
-            "selected": true,
-            "url": "/api/view?filename=rgthree.compare._temp_gxnpv_00006_.png&type=temp&subfolder=&rand=0.7400694865845551"
-          }
-        ]
-      },
-      "image_a": [
-        "8",
-        0
-      ],
-      "image_b": [
-        "75",
-        0
-      ]
-    },
-    "class_type": "Image Comparer (rgthree)",
-    "_meta": {
-      "title": "Image Comparer (rgthree)"
-    }
-  },
-  "85": {
-    "inputs": {
-      "text": "",
-      "loras": {
-        "__value__": []
-      },
-      "model": [
-        "44",
-        0
-      ],
-      "clip": [
-        "45",
-        0
-      ]
-    },
-    "class_type": "Lora Loader (LoraManager)",
-    "_meta": {
-      "title": "Lora Loader (LoraManager)"
-    }
+ "1": {
+  "class_type": "UNETLoader",
+  "inputs": {
+   "unet_name": "anima-base-v1.0.safetensors",
+   "weight_dtype": "default"
   }
+ },
+ "6": {
+  "class_type": "CLIPLoader",
+  "inputs": {
+   "clip_name": "qwen_3_06b_base.safetensors",
+   "type": "stable_diffusion",
+   "device": "cpu"
+  }
+ },
+ "11": {
+  "class_type": "VAELoader",
+  "inputs": {
+   "vae_name": "qwen_image_vae.safetensors"
+  }
+ },
+ "5": {
+  "class_type": "EmptyLatentImage",
+  "inputs": {
+   "width": 832,
+   "height": 1216,
+   "batch_size": 1
+  }
+ },
+ "48": {
+  "class_type": "UpscaleModelLoader",
+  "inputs": {
+   "model_name": "RealESRGAN_x2plus.pth"
+  }
+ },
+ "8": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "6",
+    0
+   ],
+   "text": "masterpiece, best quality, newest, 1girl, solo"
+  },
+  "_meta": {
+   "title": "Positive"
+  }
+ },
+ "68": {
+  "class_type": "CLIPTextEncode",
+  "inputs": {
+   "clip": [
+    "6",
+    0
+   ],
+   "text": "worst quality, low quality, bad hands, bad anatomy"
+  },
+  "_meta": {
+   "title": "Negative"
+  }
+ },
+ "3": {
+  "class_type": "KSampler",
+  "inputs": {
+   "seed": 110661221469510,
+   "steps": 30,
+   "cfg": 4.0,
+   "sampler_name": "euler_ancestral",
+   "scheduler": "simple",
+   "denoise": 1.0,
+   "model": [
+    "1",
+    0
+   ],
+   "positive": [
+    "8",
+    0
+   ],
+   "negative": [
+    "68",
+    0
+   ],
+   "latent_image": [
+    "5",
+    0
+   ]
+  }
+ },
+ "7": {
+  "class_type": "VAEDecode",
+  "inputs": {
+   "samples": [
+    "3",
+    0
+   ],
+   "vae": [
+    "11",
+    0
+   ]
+  }
+ },
+ "50": {
+  "class_type": "ImageUpscaleWithModel",
+  "inputs": {
+   "upscale_model": [
+    "48",
+    0
+   ],
+   "image": [
+    "7",
+    0
+   ]
+  }
+ },
+ "49": {
+  "class_type": "SaveImage",
+  "inputs": {
+   "images": [
+    "50",
+    0
+   ],
+   "filename_prefix": "Anima/%year%-%month%-%day%/anima"
+  }
+ }
 }
