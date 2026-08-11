@@ -732,9 +732,9 @@ def setup_guide() -> list[dict]:
         {"step": 8, "title": "启动对比页服务器（可选）",
          "action": "cd 包目录 && python -m http.server 8899 -d compare",
          "required": False, "verify": "generate 返回的 view_url 可访问"},
-        {"step": 9, "title": "跑一张测试图",
-         "action": "generate(prompt='masterpiece, best quality, 1girl, smile') 确认出图",
-         "required": True, "verify": "返回 completed 且输出文件存在"},
+        {"step": 9, "title": "跑内置样例验证",
+         "action": "python run_example.py（内置 repro_anima_00015 / repro_sofa_rose 两个样例，含完整提示词/seed/LoRA）",
+         "required": True, "verify": "输出与参考图 MAE<10（MAE≈0 = 环境完全一致）；差异大则检查模型/LoRA 是否齐全"},
     ]
 
 

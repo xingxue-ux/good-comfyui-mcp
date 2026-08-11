@@ -1,0 +1,19 @@
+{
+ "size": [
+  2432,
+  1664
+ ],
+ "width": 1216,
+ "height": 832,
+ "prompt": "masterpiece, best quality, newest, very aesthetic, highres, gorgeous, luxurious, dreamy, elegant,\n1girl, solo, whole body, three quarter view, facing viewer, looking at viewer, one eye closed, winking,\nlong silvery white gradient hair, golden blonde ends, red hairband,\nlazy reclining lying pose on sofa, one hand holding glasses,\nred rose flowers on coat, white inner top, black loose coat with rose print, burgundy red pleated skirt,\nloose white folded socks, black chunky platform leather shoes,\nvintage ruined brick wall window, dead branches, overgrown vines,\nsoft diffused daylight, gentle soft shadow, refined delicate linework, smooth flat color,\nsoft wrinkled fabric texture, lazy quiet relaxed mood, realistic skin, detailed skin,\npure jet black, deep burgundy red, soft milky white, warm skin tone, smooth painterly brushstrokes,\ncasual gloomy aesthetic, serene atmospheric anime illustration style,\nbloom effect, light particles, reflective surfaces, depth of field, glowing accents",
+ "negative_prompt": "worst quality, low quality, score_1, score_2, score_3, english word, signature, artist name, watermark, web_address, english commentary, bad anatomy, worst hands, deformed hands, deformed fingers, deformed feet, deformed toes, extra limbs, extra arms, extra legs, extra fingers, missing fingers, fused fingers, mutated hands",
+ "seed": 2075224187,
+ "steps": 30,
+ "cfg": 4.0,
+ "sampler_name": "euler_ancestral",
+ "scheduler": "simple",
+ "denoise": 1.0,
+ "lora_text": "<lora:ushikani_kassen_lora-000013.safetensors:0.3>, <lora:anima-darklight-style-v1-000194.safetensors:0.4>, <lora:anima-base-1-photo-background-v4.safetensors:0.6>, <lora:RealSkin SliderV2.safetensors:0.7>, <lora:surtr945_v1.safetensors:0.8>",
+ "name": "repro_sofa_rose",
+ "description": "sofa_rose: 沙发玫瑰写实（c8c07a 复刻样例）"
+}

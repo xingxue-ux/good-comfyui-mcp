@@ -65,6 +65,24 @@ Civitai LoRA 精确检索/下载/验证。
 - 使用默认组合前需把 5 个文件放入 `models/loras/`（`search_lora` / `download_lora` 可找齐）
 - 其他引擎（krea2）不受影响（用 `lora_list` 参数）
 
+## 初始化验证样例（examples/）
+
+内置两个可立即复刻的样例（完整元数据：提示词/负面/seed/参数/LoRA），
+**初始化完成后跑一遍即可验证环境是否正确**：
+
+```bash
+python run_example.py            # 跑全部两个样例
+python run_example.py repro_anima_00015   # 只跑一个
+```
+
+- `examples/repro_anima_00015.json` + `ref_repro_anima_00015.png`：
+  双人沙发月光夜（seed 8682388855765119，5 件套 LoRA）
+- `examples/repro_sofa_rose.json` + `ref_repro_sofa_rose.png`：
+  沙发玫瑰写实（seed 2075224187，4 LoRA 链）
+
+脚本复刻后与参考图逐像素对比 MAE：**MAE≈0 = 环境与参考一致**；
+差异大（>25）说明模型/LoRA 缺失或版本不符，用 `server_info` 检查缺失项。
+
 ## 快速开始（给 Agent 的提示词）
 
 在你的 Agent（Claude / Cursor / pi 等）的会话首条消息里粘贴：

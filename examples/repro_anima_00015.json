@@ -1,0 +1,19 @@
+{
+ "size": [
+  2432,
+  1824
+ ],
+ "width": 1216,
+ "height": 912,
+ "prompt": "nsfw, 2girls, loli, white hair, silver hair, red eyes, black hair, long hair, night, moonlight, indoors, living room, couch, backlighting, overexposure, lamp, babydoll, white babydoll, black babydoll, thin straps, front slit, see-through clothes, sheer fabric, covered nipples, pantyshot, thigh strap, midriff, bare navel, flat chest, hugging pillow, laughing, lounging, smile, fond, pale skin, very fair skin, The girl with silver-white hair sits on the left, hugging a cushion and laughing; the girl with long black hair lounges on the right, her right toes resting on the silver-haired girl lap, toes flat, watching her with a soft fond smile, one thigh strap circling her leg. Cold moonlight and a warm desk lamp light the room, the backlight creating a gentle overexposure that makes their pale skin glow softly against the dark blue room. Flat cel shading, crisp black outlines, a bookshelf and a potted plant stand in the background.",
+ "negative_prompt": "worst quality, low quality, bad anatomy, bad hands, exposed nipples, nipples, topless, nude",
+ "seed": 8682388855765119,
+ "steps": 30,
+ "cfg": 4.0,
+ "sampler_name": "euler_ancestral",
+ "scheduler": "simple",
+ "denoise": 1.0,
+ "lora_text": "<lora:ushikani_kassen_lora-000013.safetensors:0.3>, <lora:anima-darklight-style-v1-000194.safetensors:0.4>, <lora:anima-base-1-photo-background-v4.safetensors:0.6>, <lora:RealSkin SliderV2.safetensors:0.8>, <lora:surtr945_v1.safetensors:0.8>",
+ "name": "repro_anima_00015",
+ "description": "anima_00015: 双人沙发月光夜（d6ef6e07 复刻样例）"
+}
