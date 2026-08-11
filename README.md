@@ -36,6 +36,19 @@ Civitai LoRA 精确检索/下载/验证。
 - 若你改过 `pipeline.json`，git pull 可能冲突——先备份再更新
 - 升级后重启 MCP 客户端使新代码生效，然后调 `server_info` 确认环境正常
 
+## 复刻经验（实战教训）
+
+- **提示词一字不改，负面也一样**：同 seed 同正面、负面不同 → 画面差异可达 MAE 8+；
+  复刻时负面提示词必须与元数据完全一致
+- **PNG 被删也能找回 seed**：ComfyUI `/history/{prompt_id}` 保留每次运行的完整
+  prompt（含 seed），输出文件删除不影响追溯
+- **`training_` 前缀 = Civitai 私有训练**：`training_<id>-<时间戳>` 命名的 LoRA
+  是训练任务默认命名，未发布则公开库搜不到，属正常
+- **LoRA 文件名可能同名不同内容**：C 站"精确版"覆盖旧文件后，旧图复刻效果会变
+  （by-hash 反查可确认文件版本）
+- **动画师 LoRA 触发词变体**：画师简称可能对应 trainedWords 变体
+  （如 kan2 → @kan2arin → Kanzarin），搜不到全名时试触发词
+
 ## 快速开始（给 Agent 的提示词）
 
 在你的 Agent（Claude / Cursor / pi 等）的会话首条消息里粘贴：
