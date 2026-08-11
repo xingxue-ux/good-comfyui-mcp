@@ -130,12 +130,16 @@ ollama pull llava:7b       # 无审查 fallback（NSFW 图识图）
 
 `lookup_character_tags` / `lookup_character_appearance` 通过 camofox-browser 的
 反检测浏览器访问 Danbooru（复刻前确认角色 tag 是标准流程）。
-npm 官方包（已查证存在，需 Node >= 20）：
+npm 官方包（本机验证可用的是 @askjo 版，需 Node >= 20）：
 
 ```bash
-npm install -g camofox-browser
+npm install -g @askjo/camofox-browser
 camofox-browser                   # 启动服务（默认 127.0.0.1:9377）
 ```
+
+注：npm 上有两个同名实现——`@askjo/camofox-browser`（askjo/jo-inc，本 MCP 验证用）
+和 `camofox-browser`（redf0x1/redf0x1，功能类似的不同实现）；装哪个都行，
+但请保持与 README 命令一致（本包按 @askjo 版验证）。
 
 ### 4b. 可选：Anima-Artist-Mixer（画师链混合）
 
@@ -232,7 +236,7 @@ python -c "import good_comfyui_mcp; print('OK')"   # 模块加载
 | LoRA | 默认 5 件套（ushikani/darklight/photo-bg/RealSkin/surtr945） | civitai.red 下载放 models/loras/（可用本 MCP search_lora） | ✅（默认挂载） |
 | 节点 | 无（pipeline 只用 ComfyUI 内置节点） | — | ✅ |
 | 服务 | Ollama + qwen3-vl:8b + llava:7b | ollama.com/download + `ollama pull` | ✅（识图） |
-| 服务 | camofox-browser（127.0.0.1:9377） | `npm install -g camofox-browser`（Node>=20） | ✅ |
+| 服务 | camofox-browser（127.0.0.1:9377） | `npm install -g @askjo/camofox-browser`（Node>=20，另有 redf0x1 同名实现） | ✅ |
 | 配置 | CIVITAI_TOKEN / CIVITAI_SEARCH_KEY | civitai.red API Keys / F12 抓 multi-search Bearer | 可选 |
 | 服务 | python -m http.server 8899 -d compare | Python 自带 | 可选 |
 | 插件 | Anima-Artist-Mixer（artist_chain 画师链） | git clone 到 custom_nodes | 可选 |
