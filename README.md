@@ -141,15 +141,6 @@ camofox-browser                   # 启动服务（默认 127.0.0.1:9377）
 和 `camofox-browser`（redf0x1/redf0x1，功能类似的不同实现）；装哪个都行，
 但请保持与 README 命令一致（本包按 @askjo 版验证）。
 
-### 4b. 可选：Anima-Artist-Mixer（画师链混合）
-
-`generate` 的 `artist_chain` 参数（多画师风格混合）需要：
-```bash
-cd <ComfyUI>/custom_nodes
-git clone https://github.com/An1X3R/Anima-Artist-Mixer.git
-# 重启 ComfyUI；画师以文本标签编码（Anima 内置画师知识，无需 adapter 文件）
-```
-
 ### 5. 环境变量
 
 | 变量 | 默认 | 说明 |
@@ -239,7 +230,7 @@ python -c "import good_comfyui_mcp; print('OK')"   # 模块加载
 | 服务 | camofox-browser（127.0.0.1:9377） | `npm install -g @askjo/camofox-browser`（Node>=20，另有 redf0x1 同名实现） | ✅ |
 | 配置 | CIVITAI_TOKEN / CIVITAI_SEARCH_KEY | civitai.red API Keys / F12 抓 multi-search Bearer | 可选 |
 | 服务 | python -m http.server 8899 -d compare | Python 自带 | 可选 |
-| 插件 | Anima-Artist-Mixer（artist_chain 画师链） | git clone 到 custom_nodes | 可选 |
+
 
 
 ## 启动
