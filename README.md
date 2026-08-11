@@ -62,7 +62,9 @@ Civitai LoRA 精确检索/下载/验证。
 | surtr945_v1 | 0.8 | 画风 |
 
 - 传 `lora_text=""` 显式空载；传自定义 `<lora:...>` 覆盖默认
-- 使用默认组合前需把 5 个文件放入 `models/loras/`（`search_lora` / `download_lora` 可找齐）
+- 使用默认组合前需把 5 个文件放入 `models/loras/`，下载信息见
+  `examples/loras_required.json`（C 站 modelId/versionId/页面链接，已 by-hash 验证精确版）：
+  `curl -L -o <文件名> "https://civitai.red/api/download/models/<versionId>?token=$CIVITAI_TOKEN"`
 - 其他引擎（krea2）不受影响（用 `lora_list` 参数）
 
 ## 初始化验证样例（examples/）

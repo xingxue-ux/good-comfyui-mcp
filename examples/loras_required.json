@@ -1,0 +1,51 @@
+{
+  "说明": "默认 5 件套 LoRA 下载清单（civitai.red）。下载后放入 <ComfyUI>/models/loras/，即可运行 run_example.py 验证。",
+  "下载方式": "curl -L -o <文件名> \"https://civitai.red/api/download/models/<versionId>?token=$CIVITAI_TOKEN\"",
+  "loRA列表": [
+    {
+      "文件名": "ushikani_kassen_lora-000013.safetensors",
+      "权重": 0.3,
+      "用途": "画风",
+      "modelId": 2760349,
+      "versionId": 3106457,
+      "modelName": "ushikani_kassen-styles",
+      "页面": "https://civitai.red/models/2760349"
+    },
+    {
+      "文件名": "anima-darklight-style-v1-000194.safetensors",
+      "权重": 0.4,
+      "用途": "朦胧氛围",
+      "modelId": 2765580,
+      "versionId": 3112882,
+      "modelName": "anima-darklight-style",
+      "页面": "https://civitai.red/models/2765580"
+    },
+    {
+      "文件名": "anima-base-1-photo-background-v4.safetensors",
+      "权重": 0.6,
+      "用途": "写实背景",
+      "modelId": 1252497,
+      "versionId": 2959007,
+      "modelName": "Photo Background - 2d Compositing",
+      "页面": "https://civitai.red/models/1252497"
+    },
+    {
+      "文件名": "RealSkin SliderV2.safetensors",
+      "权重": 0.8,
+      "用途": "写实皮肤",
+      "modelId": 2682590,
+      "versionId": 3068784,
+      "modelName": "RealSkin Slider",
+      "页面": "https://civitai.red/models/2682590"
+    },
+    {
+      "文件名": "surtr945_v1.safetensors",
+      "权重": 0.8,
+      "用途": "画风",
+      "modelId": 2692601,
+      "versionId": 3023314,
+      "modelName": "AI画风 surtr945",
+      "页面": "https://civitai.red/models/2692601"
+    }
+  ]
+}
