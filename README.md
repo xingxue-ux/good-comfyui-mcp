@@ -76,28 +76,51 @@ Civitai LoRA 精确检索/下载/验证。
 
 ## 安装（初始化引导）
 
-### 1. 依赖
+### 1. Python 依赖
 
 ```bash
-pip install -r requirements.txt        # mcp + httpx
+pip install -r requirements.txt        # mcp、httpx、numpy、pillow
 ```
 
-### 2. ComfyUI + 模型
+### 2. ComfyUI（⚠️ 先确认版本）
 
-需要本地 ComfyUI（默认 127.0.0.1:8188），并准备：
-- **Anima 管线**：`pipeline.json`（本包自带示例）引用的模型：
-  - UNET：`anima-base-v1.0.safetensors`（放 `models/diffusion_models/`）
-  - CLIP：`qwen_3_06b_base.safetensors`（`models/text_encoders/`，type=stable_diffusion）
-  - VAE：`qwen_image_vae.safetensors`（`models/vae/`）
-  - 放大：`RealESRGAN_x2plus.pth`（`models/upscale_models/`，可选）
+官方安装方式任选其一（详见 https://github.com/Comfy-Org/ComfyUI ）：
+- **Desktop App**（官方推荐，Windows/macOS）：https://www.comfy.org/download
+- **Windows Portable**（便携版）：官方发布页下载解压即用（自带 Python 3.13 + torch cu130）
+- **Manual Install**：`git clone https://github.com/Comfy-Org/ComfyUI` →
+  `pip install -r requirements.txt` → N 卡安装 `pip install torch torchvision torchaudio --extra-index-url https://download.pytorch.org/whl/cu130`
+- **comfy-cli**：`pip install comfy-cli && comfy install`
+
+**版本检查（重要）**：
+- 界面左下角版本号，或仓库内 `comfyui_version.py`（如 `v0.31.0`）
+- 本 MCP 要求较新版本：**Anima 模型原生支持 + `--enable-manager` pip 包方式**均需
+  新版（约 v0.30+，2026 年版本）；老版本（2024 年及以前）的 Manager 是
+  custom_nodes 克隆方式，且可能不支持 Anima
+- torch 最低 2.7；Nvidia 20 系以上建议 cu130+
+- 启动：`python main.py --enable-manager`
+
+**ComfyUI-Manager（插件管理器，新版是 pip 包不是 clone）**：
+```bash
+cd <ComfyUI目录>
+python -m pip install -r manager_requirements.txt   # 安装 comfyui_manager 包
+python main.py --enable-manager                      # 启用（界面右侧 Manager 按钮）
+# 更新：python -m pip install -U comfyui_manager
+```
+
+**模型**（`pipeline.json` 引用，Anima 管线）：
+- UNET：`anima-base-v1.0.safetensors`（放 `models/diffusion_models/`，C 站 civitai.red 搜索 "Anima" 下载）
+- CLIP：`qwen_3_06b_base.safetensors`（`models/text_encoders/`，type=stable_diffusion）
+- VAE：`qwen_image_vae.safetensors`（`models/vae/`）
+- 放大：`RealESRGAN_x2plus.pth`（`models/upscale_models/`，可选）
+- 默认 5 件套 LoRA（见上表，放 `models/loras/`）
+- **自定义节点**：Anima 默认管线只用 ComfyUI 内置节点，**无需任何自定义节点**；
+  LoRA 由 MCP 动态注入为标准 LoraLoader 链
 - **Krea2 管线**（可选）：Dasiwa 等 Krea2 checkpoint + `qwen3vl_4b_*` CLIP，
   详见 `KREA2_TUNING.md`
-- **ComfyUI 自定义节点**：`pipeline.json`（Anima 默认管线）只用内置节点
-  （UNETLoader/CLIPLoader/VAELoader/LoraLoader/KSampler/RealESRGAN），
-  **无需任何自定义节点**。LoRA 由 MCP 动态注入为标准 LoraLoader 链。
 
 ### 3. Ollama 识图模型
 
+官方安装：https://ollama.com/download（Windows 安装器；Linux `curl -fsSL https://ollama.com/install.sh | sh`）
 ```bash
 ollama pull qwen3-vl:8b    # 主识图模型（准确，NSFW 会拒答）
 ollama pull llava:7b       # 无审查 fallback（NSFW 图识图）
@@ -106,11 +129,21 @@ ollama pull llava:7b       # 无审查 fallback（NSFW 图识图）
 ### 4. camofox-browser（Danbooru 角色查询，必需）
 
 `lookup_character_tags` / `lookup_character_appearance` 通过 camofox-browser 的
-反检测浏览器访问 Danbooru（复刻前确认角色 tag 是标准流程）：
+反检测浏览器访问 Danbooru（复刻前确认角色 tag 是标准流程）。
+npm 官方包（已查证存在，需 Node >= 20）：
 
 ```bash
-npm install -g camofox-browser   # 或按项目 README 安装
+npm install -g camofox-browser
 camofox-browser                   # 启动服务（默认 127.0.0.1:9377）
+```
+
+### 4b. 可选：Anima-Artist-Mixer（画师链混合）
+
+`generate` 的 `artist_chain` 参数（多画师风格混合）需要：
+```bash
+cd <ComfyUI>/custom_nodes
+git clone https://github.com/An1X3R/Anima-Artist-Mixer.git
+# 重启 ComfyUI；画师以文本标签编码（Anima 内置画师知识，无需 adapter 文件）
 ```
 
 ### 5. 环境变量
@@ -190,16 +223,19 @@ python -c "import good_comfyui_mcp; print('OK')"   # 模块加载
 
 ## 依赖清单
 
-| 类型 | 依赖 | 用途 | 必需? |
+| 类型 | 依赖 | 安装方式（已查证） | 必需? |
 |---|---|---|---|
-| Python | mcp, httpx, numpy, pillow（requirements.txt） | MCP 框架/网络/图像处理 | ✅ |
-| 服务 | ComfyUI（127.0.0.1:8188） | 生成引擎 | ✅ |
-| 模型 | anima-base-v1.0 + qwen_3_06b_base + qwen_image_vae（pipeline.json 引用） | Anima 管线 | ✅ |
+| Python | mcp, httpx, numpy, pillow | `pip install -r requirements.txt` | ✅ |
+| 服务 | ComfyUI（127.0.0.1:8188） | Desktop App / Portable / git clone + pip（见第 2 步；**需新版 v0.30+** 支持 Anima） | ✅ |
+| 服务 | ComfyUI-Manager | `pip install -r manager_requirements.txt` + `--enable-manager`（新版是 pip 包） | ✅（插件管理） |
+| 模型 | anima-base-v1.0 / qwen_3_06b_base / qwen_image_vae / RealESRGAN_x2plus | civitai.red 下载放对应 models 子目录 | ✅ |
+| LoRA | 默认 5 件套（ushikani/darklight/photo-bg/RealSkin/surtr945） | civitai.red 下载放 models/loras/（可用本 MCP search_lora） | ✅（默认挂载） |
 | 节点 | 无（pipeline 只用 ComfyUI 内置节点） | — | ✅ |
-| 服务 | Ollama + qwen3-vl:8b + llava:7b | 识图 | ✅（识图功能） |
-| 服务 | camofox-browser（127.0.0.1:9377） | Danbooru 角色查询 | ✅ |
-| 配置 | CIVITAI_TOKEN / CIVITAI_SEARCH_KEY | LoRA 下载/搜索 | 可选 |
-| 服务 | python -m http.server 8899 -d compare | 对比页展示 | 可选 |
+| 服务 | Ollama + qwen3-vl:8b + llava:7b | ollama.com/download + `ollama pull` | ✅（识图） |
+| 服务 | camofox-browser（127.0.0.1:9377） | `npm install -g camofox-browser`（Node>=20） | ✅ |
+| 配置 | CIVITAI_TOKEN / CIVITAI_SEARCH_KEY | civitai.red API Keys / F12 抓 multi-search Bearer | 可选 |
+| 服务 | python -m http.server 8899 -d compare | Python 自带 | 可选 |
+| 插件 | Anima-Artist-Mixer（artist_chain 画师链） | git clone 到 custom_nodes | 可选 |
 
 
 ## 启动
