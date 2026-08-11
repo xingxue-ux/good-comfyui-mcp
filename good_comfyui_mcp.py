@@ -35,6 +35,15 @@ import httpx
 from mcp.server.fastmcp import FastMCP
 
 PIPELINE = Path(os.environ.get("PIPELINE", str(Path(__file__).parent / "pipeline.json")))
+
+# 默认 5 件套 LoRA（generate 不传 lora_text 时自动挂载；传 "" 则空载）
+DEFAULT_LORAS = [
+    ("ushikani_kassen_lora-000013.safetensors", 0.3),
+    ("anima-darklight-style-v1-000194.safetensors", 0.3),
+    ("anima-base-1-photo-background-v4.safetensors", 0.6),
+    ("RealSkin SliderV2.safetensors", 0.8),
+    ("surtr945_v1.safetensors", 0.8),
+]
 COMFYUI_URL = os.environ.get("COMFYUI_URL", "http://127.0.0.1:8188").rstrip("/")
 COMPARE_DIR = Path(__file__).parent / "compare"
 VIEW_BASE = "http://127.0.0.1:8899"
@@ -891,7 +900,7 @@ def _make_view(result: dict, reference_image: str | None = None) -> dict:
 def generate(prompt: str, negative_prompt: str = "", seed: int | None = None,
              width: int | None = None, height: int | None = None,
              unet_name: str = "anima-base-v1.0.safetensors",
-             lora_text: str = "", scheduler: str = "simple",
+             lora_text: str | None = None, scheduler: str = "simple",
              character: str | None = None, timeout: int = 600,
              engine: str = "anima",
              steps: int | None = None, cfg: float | None = None,
@@ -913,9 +922,9 @@ def generate(prompt: str, negative_prompt: str = "", seed: int | None = None,
     reference was given). If the 8899 server is down (view_url unreachable),
     fall back to giving the user the output file path.
 
-    engine="anima" (default): the 生成与高修api.json pipeline, Anima tag model.
-      Optional override: steps/cfg/sampler_name (verified good combo: steps=30,
-      cfg=4.0, sampler_name=euler_ancestral, scheduler=simple, no hires fix).
+    engine="anima" (default): the pipeline.json pipeline (single KSampler,
+      30 steps cfg 4.0 euler_ancestral simple + RealESRGAN_x2plus upscale,
+      no hires fix, built-in nodes only).
     engine="krea2": Krea2/Dasiwa natural-language model, 8 steps CFG 1
       er_sde/simple, 1024x1536 default. unet_name defaults to the Dasiwa
       finetune for this engine. lora_list: [{"name": file, "strength": x}].
@@ -925,6 +934,8 @@ def generate(prompt: str, negative_prompt: str = "", seed: int | None = None,
     `character` is given (or a danbooru-style tag is found in the prompt) and
     not looked up before, it is looked up on Danbooru and returned alongside
     the result for the agent to verify with the user."""
+    if lora_text is None:
+        lora_text = ", ".join(f"<lora:{n}:{w}>" for n, w in DEFAULT_LORAS)
     neg = negative_prompt or ("(score_4, score_5, score_6:1.2), worst quality, low quality, "
                               "normal quality, bad hands, bad feet, bad anatomy, bad "
                               "proportions, cropped, missing fingers, jpeg artifacts, "

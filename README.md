@@ -49,6 +49,22 @@ Civitai LoRA 精确检索/下载/验证。
 - **动画师 LoRA 触发词变体**：画师简称可能对应 trainedWords 变体
   （如 kan2 → @kan2arin → Kanzarin），搜不到全名时试触发词
 
+## 默认 LoRA（5 件套）
+
+`generate` 不传 `lora_text` 时默认挂载 5 件套（`DEFAULT_LORAS`）：
+
+| LoRA | 权重 | 用途 |
+|---|---|---|
+| ushikani_kassen_lora-000013 | 0.3 | 画风 |
+| anima-darklight-style-v1-000194 | 0.3 | 朦胧氛围 |
+| anima-base-1-photo-background-v4 | 0.6 | 写实背景 |
+| RealSkin SliderV2 | 0.8 | 写实皮肤 |
+| surtr945_v1 | 0.8 | 画风 |
+
+- 传 `lora_text=""` 显式空载；传自定义 `<lora:...>` 覆盖默认
+- 使用默认组合前需把 5 个文件放入 `models/loras/`（`search_lora` / `download_lora` 可找齐）
+- 其他引擎（krea2）不受影响（用 `lora_list` 参数）
+
 ## 快速开始（给 Agent 的提示词）
 
 在你的 Agent（Claude / Cursor / pi 等）的会话首条消息里粘贴：
