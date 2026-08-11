@@ -19,6 +19,15 @@ Civitai LoRA 精确检索/下载/验证。
 | `deconfuse_image` | 小番茄混淆（Gilbert 曲线）解混淆 |
 | `list_cached_characters` | 已缓存角色列表 |
 
+## 快速开始（给 Agent 的提示词）
+
+在你的 Agent（Claude / Cursor / pi 等）的会话首条消息里粘贴：
+
+```text
+请先阅读项目 README：https://github.com/xingxue-ux/good-comfyui-mcp
+按其「安装（初始化引导）」章节主动协助我完成安装与初始化，并介绍此 MCP 的功能。
+```
+
 ## 更新
 
 - **git clone 安装**：进入包目录执行 `git pull`（升级后重启 MCP 客户端生效）
@@ -84,15 +93,6 @@ python run_example.py repro_anima_00015   # 只跑一个
 
 脚本复刻后与参考图逐像素对比 MAE：**MAE≈0 = 环境与参考一致**；
 差异大（>25）说明模型/LoRA 缺失或版本不符，用 `server_info` 检查缺失项。
-
-## 快速开始（给 Agent 的提示词）
-
-在你的 Agent（Claude / Cursor / pi 等）的会话首条消息里粘贴：
-
-```text
-请先阅读项目 README：https://github.com/xingxue-ux/good-comfyui-mcp
-按其「安装（初始化引导）」章节主动协助我完成安装与初始化，
-```
 
 ## 安装（初始化引导）
 
